@@ -15,7 +15,7 @@ This project depends on the [Microsoft implementation of GSL](https://github.com
 
 On Windows platforms, we recommend using [vckpg](https://vcpkg.io/en/getting-started.html) as the C++ package manager.  Issue
 ```sh
-$ ./vckpg install --triplet x64-windows ms-gsl
+$ ./vcpkg install --triplet x64-windows ms-gsl
 ```
 in the VCPKG directory, to install the GSL.  The above command assumes you are building for the `x64` target.  Replace that with the appropriate triplet if you are taregting a different platform like `arm64`.
 
