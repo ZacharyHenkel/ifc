@@ -249,11 +249,11 @@ namespace ifc {
     }
 
     struct InputIfc {
-        using StringTable    = gsl::span<const std::byte>;
+        using StringTable    = gsl::span<std::byte>;
         using PartitionTable = gsl::span<const PartitionSummaryData>;
         template<typename T>
         using Table    = gsl::span<const T>;
-        using SpanType = gsl::span<const std::byte>;
+        using SpanType = gsl::span<std::byte>;
 
         const Header* header() const
         {
@@ -291,6 +291,12 @@ namespace ifc {
             if (index_like::null(offset))
                 return {};
             return reinterpret_cast<const char*>(string_table()->data()) + to_underlying(offset);
+        }
+
+        void set(TextOffset offset, gsl::span<char> data)
+        {
+            void* start = string_table()->data() + to_underlying(offset);
+            memcpy(start, data.data(), data.size());
         }
 
         bool position(ByteOffset offset)
@@ -357,6 +363,8 @@ namespace ifc {
         }
 
         static void validate_content_integrity(const InputIfc& file);
+        static SHA256Hash generate_content_hash(const InputIfc& file);
+        void reset_content_hash();
 
         static bool compatible_architectures(Architecture src, Architecture dst)
         {
