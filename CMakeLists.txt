@@ -92,6 +92,17 @@ if(BUILD_PRINTER)
   target_compile_features(ifc-printer PRIVATE cxx_std_23)
 endif()
 
+cmake_dependent_option(BUILD_IFC4ENLISTMENT "Build the ifc4enlistment executable" OFF "NOT DEVELOPER_MODE" ON)
+if(BUILD_IFC4ENLISTMENT)
+  add_executable(
+      ifc4enlistment
+      src/ifc4enlistment/main.cxx
+      src/assert.cxx
+  )
+  target_link_libraries(ifc4enlistment PRIVATE ifc-reader)
+  target_compile_features(ifc4enlistment PRIVATE cxx_std_23)
+endif()
+
 if(NOT CMAKE_SKIP_INSTALL_RULES)
   include(cmake/install-rules.cmake)
 endif()
