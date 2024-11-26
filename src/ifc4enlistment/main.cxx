@@ -171,22 +171,24 @@ void process_ifc(const std::string& name)
     {
         if (std::to_underlying(file.name) != 0)
         {
-            std::string sourceFileStr = ifcFile.get(file.name);
-            if (sourceFileStr.starts_with(srcrootPrefix))
+            std::string_view originalSourceFile = ifcFile.get(file.name);
+            if (originalSourceFile.starts_with(srcrootPrefix))
             {
-                auto idx = sourceFileStr.find(publicPath);
+                std::string replacementSourceFile{originalSourceFile};
+                auto idx = replacementSourceFile.find(publicPath);
                 if (idx != std::string::npos)
                 {
                     std::string projectName =
-                        sourceFileStr.substr(srcrootPrefix.size(), idx - srcrootPrefix.size());
+                        replacementSourceFile.substr(srcrootPrefix.size(), idx - srcrootPrefix.size());
                     auto pathSep = projectName.find(R"(\)");
                     if (pathSep != std::string::npos)
                         projectName[pathSep] = '_';
                     std::string replacement{icachePrefix};
                     replacement += projectName;
                     replacement += icacheSuffix;
-                    sourceFileStr.replace(0, replacement.size(), replacement);
-                    ifcFile.set(file.name, sourceFileStr);
+                    replacementSourceFile.replace(0, replacement.size(), replacement);
+                    IFCVERIFY(originalSourceFile.size() == replacementSourceFile.size());
+                    ifcFile.set(file.name, replacementSourceFile);
                 }
             }
         }
